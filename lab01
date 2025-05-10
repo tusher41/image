@@ -1,0 +1,43 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.util import random_noise
+from scipy.ndimage import uniform_filter, gaussian_filter, median_filter
+
+# Read and convert to grayscale
+img = cv2.imread('E:\image processing 3-2 lab practice\website.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Add Gaussian noise
+img_gauss = random_noise(img, mode='gaussian', var=0.01)
+img_gauss = np.array(255 * img_gauss, dtype=np.uint8)
+
+# Add Salt & Pepper noise
+img_sp = random_noise(img, mode='s&p', amount=0.05)
+img_sp = np.array(255 * img_sp, dtype=np.uint8)
+
+# Mean Filter (3x3 averaging)
+mean_gauss = uniform_filter(img_gauss, size=3)
+mean_sp = uniform_filter(img_sp, size=3)
+
+# Median Filter (3x3)
+median_gauss = median_filter(img_gauss, size=3)
+median_sp = median_filter(img_sp, size=3)
+
+# Gaussian Filter (3x3 with sigma=0.5)
+gauss_gauss = gaussian_filter(img_gauss, sigma=0.5)
+gauss_sp = gaussian_filter(img_sp, sigma=0.5)
+
+# Show Results
+titles = ['Mean - Gaussian', 'Median - Gaussian', 'Gaussian - Gaussian',
+          'Mean - S&P', 'Median - S&P', 'Gaussian - S&P']
+images = [mean_gauss, median_gauss, gauss_gauss,
+          mean_sp, median_sp, gauss_sp]
+
+plt.figure(figsize=(12, 6))
+for i in range(6):
+    plt.subplot(2, 3, i+1)
+    plt.imshow(images[i], cmap='gray')
+    plt.title(titles[i])
+    plt.axis('off')
+plt.tight_layout()
+plt.show()
